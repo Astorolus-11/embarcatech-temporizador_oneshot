@@ -6,6 +6,7 @@ pela placa quanto pelo Wokwi integrado no vscode.
 
 
 ## 2. Vídeo de demonstração
+https://www.dropbox.com/scl/fi/ocn3zk77ksjdm5srexbng/WhatsApp-Video-2025-02-03-at-22.47.12.mp4?rlkey=ub6k0ct7bfth7t4foa7mq5qs5&st=ed1scpix&dl=0
 
 
 
