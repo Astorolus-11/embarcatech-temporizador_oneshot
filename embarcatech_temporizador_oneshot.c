@@ -11,14 +11,14 @@ const uint botao_a = 5;
 //Protótipos das funções:
 void setup(); //Configura os pinos
 void button_pressed();
-int64_t turn_off_1_callback(alarm_id_t id, void *user_data); // Desliga os LEDs
-int64_t turn_off_2_callback(alarm_id_t id, void *user_data);
-int64_t turn_off_3_callback(alarm_id_t id, void *user_data);
+int64_t turn_off_callback(alarm_id_t id, void *user_data); // Desliga os LEDs
+
 
 
 //Variáveis globais:
 bool led_ativo = false;
 static volatile uint32_t last_time = 0; // variável global tipo static só pode ser acessada neste arquivo
+static int counter=0;
 
 
 int main()
@@ -55,9 +55,7 @@ void button_pressed(){
                 gpio_put(led_verde,true);
                 gpio_put(led_azul,true);
                 gpio_put(led_vermelho,true);
-                add_alarm_in_ms(3000,turn_off_1_callback,NULL,false);// Ao pressionar o botão, com 3 segundos chama a função de callback
-                add_alarm_in_ms(6000,turn_off_2_callback,NULL,false);// depois com mais 3 segundos 
-                add_alarm_in_ms(9000,turn_off_3_callback,NULL,false);// depois com mais 3 segundos.
+                add_alarm_in_ms(3000,turn_off_callback,NULL,false);// Ao pressionar o botão, com 3 segundos chama a função de callback
                 led_ativo=true;
                 last_time=tempo_atual;
             }
@@ -66,27 +64,33 @@ void button_pressed(){
 
         }
 }
-int64_t turn_off_1_callback(alarm_id_t id, void *user_data){ // Desliga 1 LED
+int64_t turn_off_callback(alarm_id_t id, void *user_data){ // Desliga 1 LED
+
+    if(counter==0){ // Desliga um LED e chama a função novamente
     gpio_put(led_verde,false);
     gpio_put(led_azul,true);
     gpio_put(led_vermelho,true);
-   return 0;
+    add_alarm_in_ms(3000,turn_off_callback,NULL,false);
+    counter++;
+    }
 
-
-}
-int64_t turn_off_2_callback(alarm_id_t id, void *user_data){
+    else if(counter==1){ // Desliga dois LEDs e chama a função novamente
     gpio_put(led_verde,false);
     gpio_put(led_azul,false);
     gpio_put(led_vermelho,true);
-    return 0;
+    counter++;
+    add_alarm_in_ms(3000,turn_off_callback,NULL,false);
+    }
 
-}
-int64_t turn_off_3_callback(alarm_id_t id, void *user_data){
+    else if(counter==2){ // Desliga os três LEDs, zera o contador e led_ativo passa a ser falso
     gpio_put(led_verde,false);
     gpio_put(led_azul,false);
     gpio_put(led_vermelho,false);
+    counter=0;
     led_ativo=false;
-    return 0;
-   
+    }
     
+   return 0;
 }
+
+
